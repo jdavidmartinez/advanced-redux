@@ -1,7 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { is } from "@reduxjs/toolkit/node_modules/immer/dist/internal";
 
-createSlice({
+
+const cartSlice = createSlice({
   name: "cart",
   initialState: {
     items: [],
@@ -27,6 +27,19 @@ createSlice({
           existingItem.totalPrice = existingItem.totalPrice + newItem.price;
       }
     },
-    removeItemFromCart() {},
+    removeItemFromCart(state, action) {
+        const id = action.payload;
+        const existingItem = state.item.find(item => item.id === id);
+        if(existingItem.quantity === 1){
+            state.items = state.items.filter( item => item.id !== id )
+        }else{
+            existingItem.quantity--;
+            existingItem.totalPrice = existingItem.totalPrice - existingItem.price;
+        }
+    },
   },
 });
+
+export const cartActions = cartSlice.actions;
+
+export default cartSlice;
